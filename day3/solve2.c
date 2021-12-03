@@ -57,7 +57,6 @@ int solve(){
    o_cc--;
   }
  }
- //c_co2[bi] = c_o[bi];
 
  /* save criteria for index bi=0 */
  if(o_cc >= 0){
@@ -72,27 +71,28 @@ int solve(){
   co2_c[bi] = '1';
  }
 
+ /* *_n is used for counting the numbers verifying criteria */
  int o_n;
- int o_lasti = NBITS;
-
  int co2_n;
+ /* *_lasti is the index such that only one number left */
+ int o_lasti = NBITS;
  int co2_lasti = NBITS;
 
- /*  */
+ /* for bi=1,...,NBITS-1  */
  bi++;
  while(bi<NBITS){
   o_n=0;
-  o_cc = 0;
   co2_n=0;
+  o_cc = 0;
   co2_cc = 0;
   input_init(input);
   while(!input_endq(input)){
-   if(input_readline(input, l)){
-    return 1;
-   }
+   /* don't check errors because it has been checked it before */
+   input_readline(input, l);
    if(bi < o_lasti){
+    /* if one left */
     if(criteriaq(l, o_c, bi)){
-     /* this line verifies criteria */
+     /* if this number verifies criteria */
      o_n++;
      if(l->b[bi] == '1'){
       o_cc++;
@@ -102,8 +102,9 @@ int solve(){
     }
    }
    if(bi < co2_lasti){
+    /* if one left */
     if(criteriaq(l, co2_c, bi)){
-     /* this line verifies criteria */
+     /* if this number verifies criteria */
      co2_n++;
      if(l->b[bi] == '1'){
       co2_cc++;
@@ -114,28 +115,31 @@ int solve(){
    }
   }
   if(o_n == 1){
+   /* one number left */
    o_lasti = bi;
   }else{
+   /* otherwise save the criteria for current bit index */ 
    if(o_cc >= 0){
     o_c[bi] = '1';
    }else{
     o_c[bi] = '0';
    }
   }
-
   if(co2_n == 1){
+   /* one number left */
    co2_lasti = bi;
   }else{
+   /* otherwise save the criteria for current bit index */ 
    if(co2_cc >= 0){
     co2_c[bi] = '0';
    }else{
     co2_c[bi] = '1';
    }
   }
-
   bi++;
  }
  
+ /* o and co2 are the rating */
  int o;
  int co2;
 
@@ -143,25 +147,27 @@ int solve(){
  co2_n=0;
  input_init(input);
  while(!input_endq(input)){
-  if(input_readline(input, l)){
-   return 1;
-  }
+  input_readline(input, l);
    if(criteriaq(l, o_c, o_lasti)){
-    /* this line verifies criteria */
+    /* if this number verifies criteria */
     o_n++;
-    /* read binary to o */
+    /* read binary number to o */
     line_getbinary(l, &o);
    }
    if(criteriaq(l, co2_c, co2_lasti)){
-    /* this line verifies criteria */
+    /* if this number verifies criteria */
     co2_n++;
-    /* read binary to o */
+    /* read binary number to co2 */
     line_getbinary(l, &co2);
    }
  }
 
-
- printf("%d\n", o*co2);
+ if(o_n != 1 || co2_n != 1){
+  /* there is no solution :( */
+  printf("!!\n");
+ }else{
+  printf("%d\n", o*co2);
+ }
 
  return 0;
 }
