@@ -1,7 +1,7 @@
 
 solve1_prog=solve1
 
-solve1_obj=main.o solve1.o input.o
+solve1_obj=main.o solve1.o input.o input_c.o
 
 CC=gcc
 CFLAGS=-I.

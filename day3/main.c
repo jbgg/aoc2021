@@ -1,5 +1,5 @@
 
-void solve();
+int solve();
 
 int main(int argc, char *argv[]){
  solve();
