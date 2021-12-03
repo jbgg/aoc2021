@@ -9,7 +9,7 @@
 extern char _input[];
 
 int input_readline(input_t input, line_t l){
- if(input_readword(input, l->w, 13)){
+ if(input_readbinary(input, l->b, NBITS+1)){
   return 1;
  }
  input_skipspace(input);
@@ -46,6 +46,34 @@ int input_readnumber(input_t input, long *v){
  }
  input->p = q;
  return 0;
+}
+
+/* s is the total size of word (including '\0') */
+int input_readbinary(input_t input, char *b, int s){
+ if(b == NULL){
+  return 1;
+ }
+ int i;
+ char c;
+ i=0;
+ do{
+  c = input->p[0];
+  if(isalnum(c)){
+   if(i<s-1){
+    b[i] = c;
+   }else{
+    b[0] = 0;
+    return 1;
+   }
+  }else{
+   b[i] = 0;
+   return 0;
+  }
+  i++;
+  input->p++;
+ }while(1);
+ /* unreached */
+ return 1;
 }
 
 /* s is the total size of word (including '\0') */
