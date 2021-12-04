@@ -14,15 +14,20 @@ int board_init(board_t b){
    b->m[i][j] = 0;
   }
  }
+ b->winq = 0;
 }
 
-int input_readboards(input_t input, boardlist_p_t *blistp){
+int input_readboards(input_t input, boardlist_p_t *blistp, int *nb){
 
  boardlist_p_t *bpp;
  boardlist_p_t bp;
  bpp = blistp;
 
+ int nboards;
+
  input_skipblanklines(input);
+
+ nboards = 0;
 
  while(!input_endq(input)){
 
@@ -44,10 +49,16 @@ int input_readboards(input_t input, boardlist_p_t *blistp){
    input_skipline(input);
   }
 
+  nboards++;
+
   bpp = &(bp->next);
   input_skipblanklines(input);
 
  } /* while */
+
+ if(nb != NULL){
+  nb[0] = nboards;
+ }
 
  return 0;
 }
@@ -74,9 +85,11 @@ int board_mark(board_t board, int n){
     board->colm[j]++;
     board->m[i][j] = 1;
     if(board->rowm[i] == N){
+     board->winq = 1;
      return 1;
     }
     if(board->colm[j] == N){
+     board->winq = 1;
      return 1;
     }
    }
@@ -101,4 +114,8 @@ void board_sumunmarked(board_t board, int *s){
  if(s != NULL){
   s[0] = ss;
  }
+}
+
+int board_winq(board_t b){
+ return b->winq;
 }

@@ -155,3 +155,10 @@ void input_skipblanklines(input_t input){
   return;
  }
 }
+
+int input_eol(input_t input){
+ if(input->p[0] == '\n'){
+  return 1;
+ }
+ return 0;
+}

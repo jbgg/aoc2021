@@ -17,7 +17,7 @@ int solve(){
 
  boardlist_p_t blist;
  blist = NULL;
- if(input_readboards(input, &blist)){
+ if(input_readboards(input, &blist, NULL)){
   return 1;
  }
 

@@ -3,7 +3,7 @@ solve1_prog=solve1
 solve1_obj=main.o solve1.o input.o input_parse.o board.o
 
 solve2_prog=solve2
-solve2_obj=main.o solve2.o input.o input_parse.o
+solve2_obj=main.o solve2.o input.o input_parse.o board.o
 
 CC=gcc
 CFLAGS=-I.

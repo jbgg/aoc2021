@@ -22,6 +22,7 @@ int input_readword(input_t input, char *w, int s);
 int input_readbinary(input_t input, char *w, int s);
 
 int input_endq(input_t input);
+int input_eol(input_t input);
 
 void input_skipline(input_t input);
 void input_skipblank(input_t input);
