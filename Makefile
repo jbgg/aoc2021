@@ -1,5 +1,5 @@
 
-prog=day3
+prog=day3 day4
 
 all : $(prog)
 
@@ -10,3 +10,4 @@ $(prog) :
 
 clean :
 	make -C day3 clean
+	make -C day4 clean
