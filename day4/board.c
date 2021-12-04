@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "board.h"
 
@@ -13,6 +14,42 @@ int board_init(board_t b){
    b->m[i][j] = 0;
   }
  }
+}
+
+int input_readboards(input_t input, boardlist_p_t *blistp){
+
+ boardlist_p_t *bpp;
+ boardlist_p_t bp;
+ bpp = blistp;
+
+ input_skipblanklines(input);
+
+ while(!input_endq(input)){
+
+  bpp[0] = malloc(sizeof(boardlist_t));
+  bp = bpp[0];
+  /* boardlist init */
+  board_init(bp->board);
+  bp->next = NULL;
+
+  /* read board */
+  int i;
+  int j;
+  for(i=0;i<N;i++){
+   for(j=0;j<N;j++){
+    if(input_readnumber(input, &(bp->board->n[i][j]))){
+     return 1;
+    }
+   }
+   input_skipline(input);
+  }
+
+  bpp = &(bp->next);
+  input_skipblanklines(input);
+
+ } /* while */
+
+ return 0;
 }
 
 void board_print(board_t b){

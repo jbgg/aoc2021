@@ -3,6 +3,8 @@
 
 #define N 5
 
+#include "input.h"
+
 struct _board_t {
  /* n saves the numbers in the board */
  int n[N][N];
@@ -23,6 +25,7 @@ typedef struct _boardlist_t boardlist_t[1];
 typedef struct _boardlist_t *boardlist_p_t;
 
 int board_init(board_t);
+int input_readboards(input_t, boardlist_p_t *);
 void board_print(board_t);
 int board_mark(board_t board, int n);
 void board_sumunmarked(board_t board, int *s);
