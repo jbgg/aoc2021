@@ -101,9 +101,7 @@ int solve(){
      count++;
     }
    }
-  }
-
-  if(y1 == y2){
+  }else if(y1 == y2){
    if(x1 > x2){
     xb = x2;
     xu = x1;
