@@ -54,10 +54,6 @@ int solve(){
   countbyd[i] = countsum(i, 0);
  }
 
- for(i=0;i<=6;i++){
-  printf("[%d] %llu\n", i, countbyd[i]);
- }
-
  unsigned long count;
  int d;
 
