@@ -3,10 +3,9 @@
 
 #include "input.h"
 
-/* TODO: change n for size */
 struct _seg_t {
  int s;
- int n;
+ int size;
 };
 typedef struct _seg_t seg_t;
 
@@ -24,15 +23,23 @@ int solve(){
  unsigned int count;
  int size;
  char s[8];
+ int i2;
+ int i3;
+ int i4;
  int i5;
  int i6;
+ int i7;
  int index;
  segs_t segs;
  count = 0;
  while(!input_endq(input)){
 
+  i2 = 0;
+  i3 = 1;
+  i4 = 2;
   i5 = 3;
   i6 = 6;
+  i7 = 9;
   for(i=0;i<10;i++){
    input_readword(input, s, 8, &size);
 
@@ -50,7 +57,7 @@ int solve(){
     printf("!");
    }
    /* save it */
-   segs[index].n = size;
+   segs[index].size = size;
    segs[index].s = 0;
    for(j=0;j<size;j++){
     segs[index].s |= 1 << (s[j] - 'a');
