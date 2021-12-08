@@ -96,11 +96,6 @@ int segs_decode(segs_t segs){
   }
  }
 
- /* DEBUG */
- for(i=0;i<10;i++){
-  printf("%d(%d), ", segs[i].n, segs[i].size);
- }
- printf("\n");
  return 0;
 }
 
@@ -195,8 +190,6 @@ int solve(){
    }
    v += vv;
   }
-
-  printf("%d\n", v);
 
   count += v;
   input_skipspace(input);
