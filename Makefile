@@ -1,14 +1,12 @@
 
-prog=day3 day4 day5
+dirs=$(shell for i in `seq 3 10`; do echo day$$i; done)
 
-all : $(prog)
-
-.PHONY : $(prog)
-
-$(prog) : 
-	make -C $@
+all :
+	@for d in $(dirs); do \
+		make -C $$d; \
+	done
 
 clean :
-	make -C day3 clean
-	make -C day4 clean
-	make -C day5 clean
+	@for d in $(dirs); do \
+		make -C $$d clean; \
+	done
