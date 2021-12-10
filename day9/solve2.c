@@ -11,6 +11,21 @@ struct _hmap_t {
 };
 typedef struct _hmap_t hmap_t;
 int hmap_init(hmap_t *);
+char hmap_heightq(hmap_t hm, int i, int j){
+ int ni;
+ int nj;
+ char **h;
+ ni = hm.ni;
+ nj = hm.nj;
+ h = hm.h;
+ if(i<0 || i>=ni){
+  return -1;
+ }
+ if(j<0 || j>=nj){
+  return -1;
+ }
+ return h[i][j];
+}
 
 struct _lowp_t {
  int p[2]; /* position */
@@ -69,12 +84,93 @@ int solve(){
  return 0;
 }
 
+struct _l_points_t {
+ int p[2];
+ struct _l_points_t *next;
+};
+typedef struct _l_points_t *l_points_t;
+
+int points_add(l_points_t *p_l_points, int i, int j){
+ while(p_l_points[0] != NULL){
+  if(p_l_points[0]->p[0] == i &&
+    p_l_points[0]->p[1] == j){
+   return 0;
+  }
+  p_l_points = &(p_l_points[0]->next);
+ }
+ p_l_points[0] = malloc(sizeof(struct _l_points_t));
+ if(p_l_points[0] == NULL){
+  return 1;
+ }
+ p_l_points[0]->p[0] = i;
+ p_l_points[0]->p[1] = j;
+ return 0;
+}
+
+int l_points_print(l_points_t l_p){
+ while(l_p != NULL){
+  printf("[%d,%d] ", l_p->p[0], l_p->p[1]);
+  l_p = l_p->next;
+ }
+ printf("\n");
+ return 0;
+}
+
 int basin_size(hmap_t hm, int i, int j, int *p_s){
+ int ii;
+ int jj;
+ int h0;
+ int l;
+ l_points_t l_points_it;
+
  if(p_s == NULL){
   return 1;
  }
 
- // p_s[0] = ... ;
+ l_points_t l_points[9];
+ for(h0=0;h0<9;h0++){
+  l_points[h0] = NULL;
+ }
+ h0 = hm.h[i][j];
+ points_add(&l_points[h0], i, j);
+
+ h0++;
+ while(h0<=8){
+  l_points_it = l_points[h0-1];
+  while(l_points_it != NULL){
+   ii = l_points_it->p[0];
+   jj = l_points_it->p[1];
+   if(hmap_heightq(hm, ii-1, jj) == h0){
+    points_add(&l_points[h0], ii-1, jj);
+   }
+   if(hmap_heightq(hm, ii+1, jj) == h0){
+    points_add(&l_points[h0], ii+1, jj);
+   }
+   if(hmap_heightq(hm, ii, jj-1) == h0){
+    points_add(&l_points[h0], ii, jj-1);
+   }
+   if(hmap_heightq(hm, ii, jj+1) == h0){
+    points_add(&l_points[h0], ii, jj+1);
+   }
+   l_points_it = l_points_it->next;
+  }
+  h0++;
+ }
+
+ int size;
+
+ size = 0;
+ for(h0=0;h0<9;h0++){
+  l_points_it = l_points[h0];
+  while(l_points_it != NULL){
+   //printf(" [%d,%d] (%d)", l_points_it->p[0], l_points_it->p[1], h0);
+   size++;
+   l_points_it = l_points_it->next;
+  }
+ }
+ //printf("\n");
+
+ p_s[0] = size ;
  return 0;
 }
 
