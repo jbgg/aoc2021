@@ -78,8 +78,31 @@ int solve(){
   p_l_i = &(p_l_i[0]->next);
   l_lowp_it = l_lowp_it->next;
  }
+ //l_int_print(l_sizes);
 
- l_int_print(l_sizes);
+ int maxsizes[3] = {0,};
+ int i;
+ l_int_t l_int_it;
+ l_int_it = l_sizes;
+ while(l_int_it != NULL){
+  size = l_int_it->d;
+  for(i=2;i>=0;i--){
+   if(size >= maxsizes[i]){
+    if(i == 2){
+     maxsizes[0] = maxsizes[1];
+     maxsizes[1] = maxsizes[2];
+    }
+    if(i == 1){
+     maxsizes[0] = maxsizes[1];
+    }
+    maxsizes[i] = size;
+    break;
+   }
+  }
+  l_int_it = l_int_it->next;
+ }
+
+ printf("%d\n", maxsizes[0]*maxsizes[1]*maxsizes[2]);
 
  return 0;
 }
@@ -120,6 +143,7 @@ int basin_size(hmap_t hm, int i, int j, int *p_s){
  int ii;
  int jj;
  int h0;
+ int h1;
  int l;
  l_points_t l_points_it;
 
@@ -140,17 +164,21 @@ int basin_size(hmap_t hm, int i, int j, int *p_s){
   while(l_points_it != NULL){
    ii = l_points_it->p[0];
    jj = l_points_it->p[1];
-   if(hmap_heightq(hm, ii-1, jj) == h0){
-    points_add(&l_points[h0], ii-1, jj);
+   h1 = hmap_heightq(hm, ii-1, jj);
+   if(h1 != -1 && h1 != 9 && h1 >= h0){
+    points_add(&l_points[h1], ii-1, jj);
    }
-   if(hmap_heightq(hm, ii+1, jj) == h0){
-    points_add(&l_points[h0], ii+1, jj);
+   h1 = hmap_heightq(hm, ii+1, jj);
+   if(h1 != -1 && h1 != 9 && h1 >= h0){
+    points_add(&l_points[h1], ii+1, jj);
    }
-   if(hmap_heightq(hm, ii, jj-1) == h0){
-    points_add(&l_points[h0], ii, jj-1);
+   h1 = hmap_heightq(hm, ii, jj-1);
+   if(h1 != -1 && h1 != 9 && h1 >= h0){
+    points_add(&l_points[h1], ii, jj-1);
    }
-   if(hmap_heightq(hm, ii, jj+1) == h0){
-    points_add(&l_points[h0], ii, jj+1);
+   h1 = hmap_heightq(hm, ii, jj+1);
+   if(h1 != -1 && h1 != 9 && h1 >= h0){
+    points_add(&l_points[h1], ii, jj+1);
    }
    l_points_it = l_points_it->next;
   }
