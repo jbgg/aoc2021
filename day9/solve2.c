@@ -12,21 +12,29 @@ struct _hmap_t {
 typedef struct _hmap_t hmap_t;
 int hmap_init(hmap_t *);
 
-
 struct _lowp_t {
  int p[2]; /* position */
 };
 typedef struct _lowp_t lowp_t;
-
 struct _l_lowp_t {
  lowp_t lowp;
  struct _l_lowp_t *next;
 };
 typedef struct _l_lowp_t *l_lowp_t;
-
 int hmap_lowpointq(hmap_t hm, int i, int j);
 int hmap_getlowp(hmap_t, l_lowp_t *);
+int p_l_lowp_add(l_lowp_t *p_l_lp, int i, int j);
 int l_lowp_print(l_lowp_t);
+
+struct _l_int_t {
+ int d;
+ struct _l_int_t *next;
+};
+typedef struct _l_int_t *l_int_t;
+int p_l_int_add(l_int_t *p_l_lp, int d);
+int l_int_print(l_int_t);
+
+int basin_size(hmap_t hm, int i, int j, int *p_s);
 
 int solve(){
 
@@ -36,19 +44,37 @@ int solve(){
 
  hmap_init(&hmap);
  hmap_getlowp(hmap, &l_lowp);
- l_lowp_print(l_lowp);
+
+ //l_lowp_print(l_lowp);
+
+ l_int_t l_sizes;
+ l_sizes = NULL;
+
+ int size;
+ l_int_t *p_l_i;
+ l_lowp_t l_lowp_it;
+
+ l_lowp_it = l_lowp;
+ p_l_i = &l_sizes;
+ while(l_lowp_it != NULL){
+  basin_size(hmap, l_lowp_it->lowp.p[0], l_lowp_it->lowp.p[1],
+    &size);
+  p_l_int_add(p_l_i, size);
+  p_l_i = &(p_l_i[0]->next);
+  l_lowp_it = l_lowp_it->next;
+ }
+
+ l_int_print(l_sizes);
 
  return 0;
 }
 
-int p_l_lowp_add(l_lowp_t *p_l_lp, int i, int j){
- p_l_lp[0] = (l_lowp_t)malloc(sizeof(struct _l_lowp_t));
- if(p_l_lp[0] == NULL){
+int basin_size(hmap_t hm, int i, int j, int *p_s){
+ if(p_s == NULL){
   return 1;
  }
- p_l_lp[0]->lowp.p[0] = i;
- p_l_lp[0]->lowp.p[1] = j;
 
+ // p_s[0] = ... ;
  return 0;
 }
 
@@ -175,12 +201,39 @@ int hmap_lowpointq(hmap_t hm, int i, int j){
  return 1;
 }
 
+int p_l_lowp_add(l_lowp_t *p_l_lp, int i, int j){
+ p_l_lp[0] = (l_lowp_t)malloc(sizeof(struct _l_lowp_t));
+ if(p_l_lp[0] == NULL){
+  return 1;
+ }
+ p_l_lp[0]->lowp.p[0] = i;
+ p_l_lp[0]->lowp.p[1] = j;
+ return 0;
+}
 int l_lowp_print(l_lowp_t l_lowp){
  l_lowp_t l_lowp_it;
  l_lowp_it = l_lowp;
  while(l_lowp != NULL){
   printf("[%d,%d]\n", l_lowp->lowp.p[0], l_lowp->lowp.p[1]);
   l_lowp = l_lowp->next;
+ }
+ return 0;
+}
+
+int p_l_int_add(l_int_t *p_l_i, int d){
+ p_l_i[0] = (l_int_t)malloc(sizeof(struct _l_int_t));
+ if(p_l_i[0] == NULL){
+  return 1;
+ }
+ p_l_i[0]->d = d;
+ return 0;
+}
+int l_int_print(l_int_t l_int){
+ l_int_t l_int_it;
+ l_int_it = l_int;
+ while(l_int != NULL){
+  printf("%d\n", l_int->d);
+  l_int = l_int->next;
  }
  return 0;
 }
