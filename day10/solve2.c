@@ -4,6 +4,65 @@
 
 #include "input.h"
 
+struct _l_ulong_t {
+ unsigned long ul;
+ struct _l_ulong_t *next;
+};
+typedef struct _l_ulong_t *l_ulong_t;
+
+int l_ulong_getbyindex(l_ulong_t l, int index, unsigned long *pul){
+ int i;
+ if(pul == NULL){
+  return 1;
+ }
+ i = 0;
+ while(l != NULL){
+  if(i == index){
+   pul[0] = l->ul;
+   return 0;
+  }
+  i++;
+  l = l->next;
+ }
+ return 1;
+}
+
+int l_ulong_sortadd(l_ulong_t *p, unsigned long ul){
+ l_ulong_t l;
+ l_ulong_t lprev;
+ l_ulong_t lnew;
+
+ if(p == NULL){
+  return 1;
+ }
+ l = p[0];
+ lprev = NULL;
+ while(l!=NULL && l->ul < ul){
+  lprev = l;
+  l = l->next;
+ }
+ lnew = malloc(sizeof(struct _l_ulong_t));
+ if(lnew == NULL){
+  return 1;
+ }
+ lnew->ul = ul;
+ lnew->next = l;
+ if(lprev == NULL){
+  p[0] = lnew;
+ }else{
+  lprev->next = lnew;
+ }
+ return 0;
+}
+
+int l_ulong_print(l_ulong_t l_ul){
+ while(l_ul != NULL){
+  printf("%llu\n", l_ul->ul);
+  l_ul = l_ul->next;
+ }
+ return 0;
+}
+
 int solve(){
 
  input_t input;
@@ -44,11 +103,14 @@ int solve(){
   return 1;
  }
 
- unsigned long linepoints;
+ unsigned long linepoint;
+ int nlinepoints;
+ l_ulong_t linepoints;
+ linepoints = NULL;
  int illegalq;
  int ni;
 
- n = 0;
+ nlinepoints = 0;
  while(!input_endq(input)){
   i = 0;
   illegalq = 0;
@@ -73,35 +135,39 @@ int solve(){
   }
   if(illegalq == 0){
    ni = i;
-   linepoints = 0;
+   linepoint = 0;
    for(i=ni-1;i>=0;i--){
     if(l[i] == ')' || l[i] == ']' ||
       l[i] == '}' || l[i] == '>'){
      printf("!");
     }
     if(l[i] == '('){
-     linepoints *= 5;
-     linepoints += 1;
+     linepoint *= 5;
+     linepoint += 1;
     }
     if(l[i] == '['){
-     linepoints *= 5;
-     linepoints += 2;
+     linepoint *= 5;
+     linepoint += 2;
     }
     if(l[i] == '{'){
-     linepoints *= 5;
-     linepoints += 3;
+     linepoint *= 5;
+     linepoint += 3;
     }
     if(l[i] == '<'){
-     linepoints *= 5;
-     linepoints += 4;
+     linepoint *= 5;
+     linepoint += 4;
     }
    }
-   printf("%llu\n", linepoints);
+   l_ulong_sortadd(&linepoints, linepoint);
+   nlinepoints++;
   }
-
   input_skipline(input);
-  n++;
  }
+
+ if(l_ulong_getbyindex(linepoints, nlinepoints/2, &linepoint)){
+  return 1;
+ }
+ printf("%llu\n", linepoint);
 
  return 0;
 }
