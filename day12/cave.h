@@ -47,5 +47,6 @@ int caves_findbyid(p_caves_t p, int id, p_cave_t *q);
 
 int caves_fill(p_caves_t p);
 int caves_count(p_caves_t p, unsigned long *c);
+int caves_count2(p_caves_t p, unsigned long *c);
 
 #endif /* __CAVE_H__ */

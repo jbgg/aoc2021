@@ -8,6 +8,71 @@
 
 #define PATH_MAXLENGTH (256)
 
+int caves_count2_r(p_caves_t p, cave_t *path[PATH_MAXLENGTH],
+  int index, int smallrepq){
+
+ int ret;
+ int i;
+ int validq;
+ int smallrepqq;
+ cave_t *c;
+
+ c = path[index];
+ conn_t *conn;
+
+ if(c->id == ENDID){
+  return 1;
+ }
+
+ if(index == (PATH_MAXLENGTH - 1)){
+  /* !! */
+  return 0;
+ }
+ ret = 0;
+ conn = c->conn;
+ while(conn != NULL){
+  validq = 1;
+  smallrepqq = smallrepq;
+  if(conn->p->type == SMALL_CAVE){
+   if(conn->p->id == STARTID){
+    validq = 0;
+   }else{
+    for(i=0;i<=index;i++){
+     if(path[i]->id == conn->p->id){
+      if(smallrepq == 0){
+       smallrepqq = 1;
+      }else{
+       validq = 0;
+      }
+      break;
+     }
+    }
+   } /* if STARTID */
+  } /* if SMALL_CAVE */
+  if(validq){
+   path[index+1] = conn->p;
+   ret += caves_count2_r(p, path, index+1, smallrepqq);
+  }
+  conn = conn->next;
+ }
+ return ret;
+}
+
+int caves_count2(p_caves_t p, unsigned long *c){
+ if(c == NULL){
+  return 1;
+ }
+ cave_t *path[PATH_MAXLENGTH];
+ p_cave_t q;
+ if(caves_findbyid(p, STARTID, &q)){
+  return 1;
+ }
+
+ path[0] = q;
+ c[0] = caves_count2_r(p, path, 0, 0);
+ return 0;
+}
+
 int caves_count_r(p_caves_t p, cave_t *path[PATH_MAXLENGTH], int index){
 
  int ret;
@@ -76,7 +141,6 @@ int caves_findbyid(p_caves_t p, int id, p_cave_t *q){
 }
 
 int caves_fill(p_caves_t p){
- /* TODO */
  p_caves_t pinit;
  conn_t *conn;
  cave_t *q;
