@@ -19,10 +19,6 @@ int caves_count_r(p_caves_t p, cave_t *path[PATH_MAXLENGTH], int index){
   return 1;
  }
 
- //printf("path[%d] = ", index);
- //printid(path[index]->id);
- //printf("\n");
-
  if(index == (PATH_MAXLENGTH - 1)){
   /* !! */
   return 0;
@@ -61,7 +57,6 @@ int caves_count(p_caves_t p, unsigned long *c){
  }
 
  path[0] = q;
- /* TODO */
  c[0] = caves_count_r(p, path, 0);
  return 0;
 }
