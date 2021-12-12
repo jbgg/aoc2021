@@ -6,6 +6,100 @@
 #include "cave.h"
 #include "input.h"
 
+#define PATH_MAXLENGTH (256)
+
+int caves_count_r(p_caves_t p, cave_t *path[PATH_MAXLENGTH], int index){
+
+ int ret;
+ cave_t *c;
+ c = path[index];
+ conn_t *conn;
+
+ if(c->id == ENDID){
+  return 1;
+ }
+
+ //printf("path[%d] = ", index);
+ //printid(path[index]->id);
+ //printf("\n");
+
+ if(index == (PATH_MAXLENGTH - 1)){
+  /* !! */
+  return 0;
+ }
+ int i;
+ int validq;
+ ret = 0;
+ conn = c->conn;
+ while(conn != NULL){
+  validq = 1;
+  if(conn->p->type == SMALL_CAVE){
+   for(i=0;i<=index;i++){
+    if(path[i]->id == conn->p->id){
+     validq = 0;
+     break;
+    }
+   }
+  }
+  if(validq){
+   path[index+1] = conn->p;
+   ret += caves_count_r(p, path, index+1);
+  }
+  conn = conn->next;
+ }
+ return ret;
+}
+
+int caves_count(p_caves_t p, unsigned long *c){
+ if(c == NULL){
+  return 1;
+ }
+ cave_t *path[PATH_MAXLENGTH];
+ p_cave_t q;
+ if(caves_findbyid(p, STARTID, &q)){
+  return 1;
+ }
+
+ path[0] = q;
+ /* TODO */
+ c[0] = caves_count_r(p, path, 0);
+ return 0;
+}
+
+int caves_findbyid(p_caves_t p, int id, p_cave_t *q){
+ if(q == NULL){
+  return 1;
+ }
+ while(p!=NULL){
+  if(p->c.id == id){
+   q[0] = &(p->c);
+   return 0;
+  }
+  p = p->next;
+ }
+ return 1;
+}
+
+int caves_fill(p_caves_t p){
+ /* TODO */
+ p_caves_t pinit;
+ conn_t *conn;
+ cave_t *q;
+ pinit = p;
+ while(p != NULL){
+  conn = p->c.conn;
+  while(conn != NULL){
+   if(caves_findbyid(pinit, conn->id, &q)){
+    return 1;
+   }
+   conn->p = q;
+   conn = conn->next;
+  }
+  p = p->next;
+ }
+ return 0;
+}
+
 int cave_getid(char *n, int *p, cavetype_t *t){
  if(p == NULL || t == NULL){
   return 1;
@@ -43,6 +137,7 @@ int conn_add(p_conn_t *pp, int idconn){
  }
  pp[0] = malloc(sizeof(pp[0][0]));
  pp[0]->id = idconn;
+ pp[0]->p = NULL;
  pp[0]->next = NULL;
  return 0;
 }
@@ -130,7 +225,7 @@ int printid(int id){
 
 int conn_print(p_conn_t p){
  while(p != NULL){
-  printid(p->id);
+  printid(p->p->id);
   printf(",");
   p = p->next;
  }

@@ -14,6 +14,7 @@ typedef enum _cavetype_t cavetype_t;
 
 struct _conn_t {
  int id;
+ struct _cave_t *p;
  struct _conn_t *next;
 };
 typedef struct _conn_t conn_t;
@@ -30,6 +31,7 @@ struct _caves_t {
  struct _caves_t *next;
 };
 typedef struct _cave_t cave_t;
+typedef struct _cave_t *p_cave_t;
 typedef struct _caves_t caves_t;
 typedef struct _caves_t *p_caves_t;
 
@@ -41,5 +43,9 @@ int caves_init(p_caves_t *pp);
 int printid(int id);
 int conn_print(p_conn_t p);
 int caves_print(p_caves_t p);
+int caves_findbyid(p_caves_t p, int id, p_cave_t *q);
+
+int caves_fill(p_caves_t p);
+int caves_count(p_caves_t p, unsigned long *c);
 
 #endif /* __CAVE_H__ */
