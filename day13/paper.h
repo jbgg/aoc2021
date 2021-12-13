@@ -22,8 +22,11 @@ struct _paper_t {
 };
 typedef struct _paper_t paper_t;
 
-int paper_init(paper_t *p);
-int paper_print(paper_t p);
 int instr_add(instr_t **ipp, char c, int n);
+int paper_init(paper_t *p);
+int paper_ismarkedq(paper_t p, int xi, int yi);
+int paper_fold(paper_t *p);
+int paper_count(paper_t p, unsigned long *n);
+int paper_print(paper_t p);
 
 #endif /* __PAPER_H__ */

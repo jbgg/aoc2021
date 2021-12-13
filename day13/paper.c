@@ -3,6 +3,111 @@
 #include "input.h"
 #include "paper.h"
 
+int paper_ismarkedq(paper_t p, int xi, int yi){
+ if(xi < 0 || yi < 0){
+  return 0;
+ }
+ if(xi >= p.xmax || yi >= p.ymax){
+  return 0;
+ }
+ if(p.m[xi][yi] == MARKED){
+  return 1;
+ }
+ return 0;
+}
+
+int paper_count(paper_t p, unsigned long *n){
+ int xi;
+ int yi;
+ char **m;
+ unsigned long count;
+ if(n == NULL){
+  return 1;
+ }
+ m = p.m;
+ if(m == NULL){
+  return 1;
+ }
+ count = 0;
+ for(xi=0;xi<p.xmax;xi++){
+  for(yi=0;yi<p.ymax;yi++){
+   if(m[xi][yi] == MARKED){
+    count++;
+   }
+  }
+ }
+ n[0] = count;
+ return 0;
+}
+
+int paper_fold(paper_t *p){
+
+ int xmax;
+ int ymax;
+ char **m;
+ int xi;
+ int yi;
+ instr_t *instr;
+
+ if(p == NULL){
+  return 1;
+ }
+
+ xmax = p->xmax;
+ ymax = p->ymax;
+ m = p->m;
+
+ instr = p->instr;
+ if(instr == NULL){
+  return 1;
+ }
+
+ int line;
+ line = instr->line;
+
+
+ if(instr->foldxy == FOLDX){
+  if(line < 0 || line > xmax){
+   return 1;
+  }
+  for(yi=0;yi<ymax;yi++){
+   if(m[line][yi] == MARKED){
+    return 1;
+   }
+  }
+  for(xi=0;xi<line;xi++){
+   for(yi=0;yi<ymax;yi++){
+    if(paper_ismarkedq(p[0], 2*line-xi, yi)){
+     m[xi][yi] = MARKED;
+    }
+   }
+  }
+  p->xmax = line;
+ }else if(instr->foldxy == FOLDY){
+  if(line < 0 || line > ymax){
+   return 1;
+  }
+  for(xi=0;xi<xmax;xi++){
+   if(m[line][xi] == MARKED){
+    return 1;
+   }
+  }
+  for(xi=0;xi<xmax;xi++){
+   for(yi=0;yi<line;yi++){
+    if(paper_ismarkedq(p[0], xi, 2*line-yi)){
+     m[xi][yi] = MARKED;
+    }
+   }
+  }
+  p->ymax = line;
+ }else{
+  return 1;
+ } /* if instr->foldxy */
+
+ p->instr = instr->next;
+ return 0;
+}
+
 int instr_add(instr_t **ipp, char c, int n){
  if(ipp == NULL){
   return 1;
@@ -155,14 +260,14 @@ int paper_print(paper_t p){
  int xi;
  int yi;
  printf("xmax = %d; ymax = %d\n", p.xmax, p.ymax);
- /*
- for(yi=0;yi<p.ymax;yi++){
-  for(xi=0;xi<p.xmax;xi++){
-   printf("%c", p.m[xi][yi]);
+ if(p.xmax <=80 && p.ymax <=20){
+  for(yi=0;yi<p.ymax;yi++){
+   for(xi=0;xi<p.xmax;xi++){
+    printf("%c", p.m[xi][yi]);
+   }
+   printf("\n");
   }
-  printf("\n");
  }
- */
  instr_print(p.instr);
 
  return 0;
