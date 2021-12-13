@@ -88,7 +88,7 @@ int paper_fold(paper_t *p){
    return 1;
   }
   for(xi=0;xi<xmax;xi++){
-   if(m[line][xi] == MARKED){
+   if(m[xi][line] == MARKED){
     return 1;
    }
   }
@@ -259,16 +259,11 @@ int instr_print(instr_t *p){
 int paper_print(paper_t p){
  int xi;
  int yi;
- printf("xmax = %d; ymax = %d\n", p.xmax, p.ymax);
- if(p.xmax <=80 && p.ymax <=20){
-  for(yi=0;yi<p.ymax;yi++){
-   for(xi=0;xi<p.xmax;xi++){
-    printf("%c", p.m[xi][yi]);
-   }
-   printf("\n");
+ for(yi=0;yi<p.ymax;yi++){
+  for(xi=0;xi<p.xmax;xi++){
+   printf("%c", p.m[xi][yi]);
   }
+  printf("\n");
  }
- instr_print(p.instr);
-
  return 0;
 }
